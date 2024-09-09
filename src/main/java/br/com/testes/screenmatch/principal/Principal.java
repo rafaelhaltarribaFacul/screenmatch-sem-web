@@ -3,6 +3,7 @@ package br.com.testes.screenmatch.principal;
 import br.com.testes.screenmatch.model.DadosSerie;
 import br.com.testes.screenmatch.model.DadosTemporadas;
 import br.com.testes.screenmatch.model.Serie;
+import br.com.testes.screenmatch.repository.SerieRepository;
 import br.com.testes.screenmatch.service.ConsumoAPI;
 import br.com.testes.screenmatch.service.ConverteDados;
 
@@ -19,6 +20,12 @@ public class Principal {
     private final ConverteDados conversor = new ConverteDados();
     private final String ENDERECO = "https://www.omdbapi.com/?t=";
     private final List<DadosSerie> dadosSeries = new ArrayList<>();
+
+    private SerieRepository repositorio;
+
+    public Principal(SerieRepository repositorio) {
+        this.repositorio = repositorio;
+    }
 
     public void exibeMenu() {
         var opcao = -1;
@@ -47,7 +54,8 @@ public class Principal {
 
     private void buscarSerieWeb() {
         DadosSerie dados = getDadosSerie();
-        dadosSeries.add(dados);
+        Serie serie = new Serie(dados);
+        repositorio.save(serie);
         System.out.println(dados);
     }
 
@@ -71,15 +79,9 @@ public class Principal {
     }
 
     private void listarSeriesBucasdas() {
-        List<Serie> series = dadosSeries.stream()
-                .map(Serie::new)
+        List<Serie> series = repositorio.findAll();
+        series.stream()
                 .sorted(Comparator.comparing(Serie::getGenero))
-                .collect(Collectors.toList());
-        series.forEach(System.out::println);
-    }
-
-    public static void main(String[] args) {
-        Principal principal = new Principal();
-        principal.exibeMenu();
+                .forEach(System.out::println);
     }
 }

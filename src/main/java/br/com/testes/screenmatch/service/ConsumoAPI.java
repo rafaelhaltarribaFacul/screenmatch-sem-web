@@ -12,10 +12,8 @@ public class ConsumoAPI {
     private String apiKey;
 
     public ConsumoAPI() {
-        // Carregar a chave da API usando ApiKeyLoader
-        this.apiKey = ApiKeyLoader.carregarChaveApi("api_key.txt"); // Certifique-se de que o caminho esteja correto
+        this.apiKey = ApiKeyLoader.carregarChaveApi("api_key.txt"); // crie um arquivo api_key.txt que contenha a sua chave da API
 
-        // Verifica se a chave foi carregada corretamente
         if (this.apiKey.isEmpty()) {
             throw new RuntimeException("Chave da API não encontrada ou não carregada corretamente.");
         }
@@ -24,7 +22,7 @@ public class ConsumoAPI {
     public String obterDados(String endereco) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(endereco + "&apikey=" + this.apiKey)) // Adiciona a chave da API ao final da URL
+                .uri(URI.create(endereco + "&apikey=" + this.apiKey))
                 .build();
         HttpResponse<String> response;
         try {
